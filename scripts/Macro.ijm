@@ -1,10 +1,10 @@
 //if you open an image file and select the germarium as an ROI
-//this macro will output the no. of dots in each stack. 
+//this macro will output the no. of dots in each stack to my hard drive. 
 //ignore the dapi channel, it will be meaningless. 
 //and make sure you are NOT working with a z-stack!
 name=getTitle;
 id="test_10.07.18/"
-dir="/media/shannon/Seagate Expansion Drive/images_out/"; 
+dir="/media/shannon/Documents/dHCR/data/"; 
 path=dir+id;
 run("Gaussian Blur...", "sigma=0.13 scaled stack");
 run("Subtract Background...", "rolling=5 stack");
