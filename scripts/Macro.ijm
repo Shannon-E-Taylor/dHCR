@@ -14,7 +14,7 @@ setAutoThreshold("Default dark");
 setOption("BlackBackground", true);
 run("Convert to Mask", "method=Default background=Dark calculate");
 run("Watershed", "stack");
-run("Analyze Particles...", "size=0-5 show=[Bare Outlines] summarize stack");
+run("Analyze Particles...", "size=0-5 show=[Bare Outlines] summarize display stack");
 selectWindow("Summary of "+name);
 saveAs("Measurements", path + name +".csv");
 selectWindow(name); 
