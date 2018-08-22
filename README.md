@@ -35,7 +35,7 @@ Input: an image. Output: three files.
 - handy if you want to know if dot dentisties vary with depth. 
 
 
-##TODO
+## TODO
 
 - add R scripts for analysis 
 
