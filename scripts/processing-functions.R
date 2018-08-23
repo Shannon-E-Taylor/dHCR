@@ -43,15 +43,16 @@ calculate_relative_expression <- function(folder, slices, genes){
     areas$z.position <- substring(areas$z.position, 3)
     areas$id <- paste(areas$name, areas$z.position, sep = ",")
     
-    for (i in 1:length(areas)-1){
+    for (i in 1:nrow(areas)){
       data$relative[data$id == areas$id[i]] <- data$Count[data$id == areas$id[i]]/areas$Area[i] #death by subscripts
+      #data$relative[data$id == areas$id[i]] <- data$Count[data$id == areas$id[i]]/areas$Area[i] #death by subscripts
       
       
       
     }
     
   } else {
-  for (i in 1:length(areas)-1){
+  for (i in 1:nrow(areas)){
     data$relative[data$name == areas$name[i]] <- data$Count[data$name==areas$name[i]]/areas$Area[i] 
   }
   }
