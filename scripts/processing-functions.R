@@ -34,7 +34,10 @@ calculate_relative_expression <- function(folder, slices, genes){
   
   areas$name <- gsub("Areas", "", areas$name) #get rid of "Areas" for later 
   
+  #specific processing for z-stacks
   if (slices == TRUE){
+    
+    #get z-position data 
     data$z.position <- regmatches(data$Slice, regexpr("z:[[:digit:]]*", data$Slice))
     data$z.position <- substring(data$z.position, 3)
     data$id <- paste(data$name, data$z.position, sep = ",")
@@ -46,10 +49,10 @@ calculate_relative_expression <- function(folder, slices, genes){
     for (i in 1:nrow(areas)){
       data$relative[data$id == areas$id[i]] <- data$Count[data$id == areas$id[i]]/areas$Area[i] #death by subscripts
       #data$relative[data$id == areas$id[i]] <- data$Count[data$id == areas$id[i]]/areas$Area[i] #death by subscripts
-      
-      
-      
-    }
+      }
+    
+    
+    
     
   } else {
   for (i in 1:nrow(areas)){
@@ -63,6 +66,44 @@ calculate_relative_expression <- function(folder, slices, genes){
 }
 
 
+process_stacks <- function(a.file, df){
+  #if col Start.pos doesn't already exist, make it 
+  #if (!any(names(df)== "relative.pos")) df$relative.pos <- NA
+  #if (!any(names(df)== "absolute.pos")) df$absolute.pos <- NA
+  
+  f <- file(a.file, "r")
+  axis.code <- "d"
 
+  #get start, stop, z-number info from .oif file
+  while(TRUE){
+    line <- readLines(f, 1)
+    if(length(line) ==0 ) break
+    #if (exists("z") && exists("abs.start") && exists("abs.stop")) break #exit if we have info we need- may cause bug
+    if (grepl("Z End Pos", line)) z <- as.numeric(gsub(".*?([0-9]+).*", "\\1", line))
+    #need to only use Z axis info! 
+    if (grepl('AxisCode="X"', line)) axis.code <- "X"
+    if (grepl('AxisCode="Y"', line)) axis.code <- "Y"
+    if (grepl('AxisCode="Z"', line)) axis.code <- "Z"
+    if (grepl('AxisCode="T"', line)) axis.code <- "T"
+    
+    if (axis.code == "Z"){
+      if (grepl("Start Absolute Position", line)) abs.start <- as.numeric(gsub(".*?([0-9]+).*", "\\1", line))
+      if (grepl("Stop Absolute Position", line)) abs.stop <- as.numeric(gsub(".*?([0-9]+).*", "\\1", line))
+    }
+      
+  }
+  
+  close(f)
+  dif <- abs.stop - abs.start
+  increment <- dif/z
+  
+  n <- paste("slices//", substr(a.file, 1, 9), sep = "") #so it matches df$name
 
+ df$relative.pos[df$name==n] <- as.numeric(df$z.position[df$name == n])*increment / 1000 #won't start at 0
+ df$absolute.pos[df$name==n] <- (((as.numeric(df$z.position[df$name == n] )- 1)*increment) + abs.start)/1000000
+ 
+  
+  return(df)
+}
 
+#df[df$name == "slices//Image0014"]
