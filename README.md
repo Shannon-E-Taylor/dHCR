@@ -32,7 +32,7 @@ Input: an image. Output: three files.
 
 - basically the same as `dHCR.ijm`, but returns data for each slice of a Z-stack. 
 
-- handy if you want to know if dot dentisties vary with depth. 
+- handy if you want to know if dot densities vary with depth. 
 
 
 ## TODO
